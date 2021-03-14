@@ -1,8 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const App = props => {
+
   const [state, setState] = useState(props);
   const { name, price } = state;
+
+  useEffect(() => {
+    console.log('ComponentDidUpdate')
+  });
+
+  // renderしたとき、最初の一回だけ呼ばれる
+  useEffect(() => {
+    console.log('ComponentDidMount')
+  }, []);
+
+  // nameの変更があったとkに呼ばれる
+  useEffect(() => {
+    console.log('This callback is name only')
+  }, [name]);
+
   return (
     <>
       <p>
