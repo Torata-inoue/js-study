@@ -17,7 +17,7 @@ const App = () => {
 
           <div className="form-group">
             <label htmlFor="formEventBody">ボディー</label>
-            <input className="form-control" id="formEventBody"/>
+            <textarea className="form-control" id="formEventBody"></textarea>
           </div>
 
           <button className="btn btn-primary">イベントを作成する</button>
