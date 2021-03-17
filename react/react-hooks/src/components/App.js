@@ -2,10 +2,14 @@ import React, { useReducer, useState } from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Event from './Event.js';
 import reducer from '../reducers';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, []);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
   const addEvent = e => {
     e.preventDefault();
 
@@ -18,8 +22,6 @@ const App = () => {
     setTitle('');
     setBody('');
   };
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
 
 
   return (
@@ -52,7 +54,10 @@ const App = () => {
             <th></th>
           </tr>
           </thead>
+          <tbody>
+          { state.map((event, index) => (<Event key={index} event={event} dispatch={dispatch}/>)) }
 
+          </tbody>
         </table>
       </div>
     </>
