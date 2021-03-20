@@ -1,7 +1,11 @@
 import React, {useContext} from 'react';
 
 import AppContext from '../contexts/AppContext.js';
-import { DELETE_EVENT } from "../actions";
+import {
+  DELETE_EVENT,
+  ADD_OPERATION_LOG
+} from "../actions";
+import { timeCurrentIso8601 } from '../utils.js';
 
 const Event = ({ event }) => {
   const { dispatch } = useContext(AppContext);
@@ -10,7 +14,13 @@ const Event = ({ event }) => {
     const result = window.confirm(`イベントid=${id}を本当に削除してもいいですか？`);
 
     if (result) {
-      dispatch({ type: DELETE_EVENT, id: id })
+      dispatch({ type: DELETE_EVENT, id: id });
+
+      dispatch({
+        type: ADD_OPERATION_LOG,
+        description: `イベントid=${id}を削除しました`,
+        operatedAt: timeCurrentIso8601()
+      });
     }
   };
 
