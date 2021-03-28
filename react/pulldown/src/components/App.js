@@ -5,6 +5,8 @@ import {
   PULL_USER
 } from "../reducers/users.js";
 
+let clicked_user;
+
 const App = ({ data }) => {
   const users = data.users;
   const is_close = data.options.onClickUser.isCloseLists;
@@ -27,6 +29,7 @@ const App = ({ data }) => {
       })
     }
 
+    clicked_user = user;
   };
 
   return (
@@ -50,3 +53,4 @@ const App = ({ data }) => {
 };
 
 export default App;
+export const user = user;

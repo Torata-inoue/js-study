@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
+import clicked_user from './components/App';
 
 const data = {
   users: [
@@ -25,3 +26,7 @@ const data = {
 
 
 ReactDOM.render(<App data={data}/>,document.getElementById('root'));
+
+useEffect(() => {
+  // チップ設置
+}, clicked_user);
