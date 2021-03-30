@@ -5,44 +5,45 @@ import {
   PULL_USER
 } from "../reducers/users.js";
 
-let clicked_user;
-
 const App = ({ data }) => {
-  const users = data.users;
+  const initState = {
+    users: data.users
+  };
   const is_close = data.options.onClickUser.isCloseLists;
   const is_pull_user = data.options.onClickUser.isCloseLists;
 
-  const [state, dispatch] = useReducer(reducer, users);
+
+  const [state, dispatch] = useReducer(reducer, initState);
 
   const getUser = e => {
     if (!is_close) {
       e.preventDefault();
     }
 
-    // 値取得出来てない
-    const user = e.target;
+    const user_id = Number(e.target.dataset.id);
 
     if (is_pull_user) {
       dispatch({
         type: PULL_USER,
-        // id: user.id
+        id: user_id
       })
     }
-
-    clicked_user = user;
   };
 
   return (
-    <AppContext.Provider>
+    <AppContext.Provider value={{state, dispatch}}>
       <div>
         {/*form components*/}
         <input type="text"/>
         {/*list component*/}
         <ul>
           {
-            users.map((user, index) => {
+            state.users.map((user, index) => {
               return (
-                <li key={index} onClick={getUser} data-user={user}>icon: {user.icon}, name: {user.name}</li>
+                <li key={index} onClick={getUser} data-id={user.id}>
+                  icon: {user.icon}
+                  name: {user.name}
+                </li>
               )
             })
           }
@@ -53,4 +54,3 @@ const App = ({ data }) => {
 };
 
 export default App;
-export const user = user;

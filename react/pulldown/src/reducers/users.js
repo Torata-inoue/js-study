@@ -4,6 +4,9 @@ export const ADD_USER = 1;
 const users = (state = [], action) => {
   switch (action.type) {
     case PULL_USER:
+      state.filter(user => {
+        console.log([user.id, action.id])
+      });
       return state.filter( user => user.id !== action.id );
 
     case ADD_USER:

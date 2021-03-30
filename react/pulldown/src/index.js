@@ -1,7 +1,6 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import clicked_user from './components/App';
 
 const data = {
   users: [
@@ -19,14 +18,10 @@ const data = {
   options: {
     onClickUser: {
       isCloseLists: true,
-      isPullUser: false
+      isPullUser: true
     }
   }
 };
 
 
 ReactDOM.render(<App data={data}/>,document.getElementById('root'));
-
-useEffect(() => {
-  // チップ設置
-}, clicked_user);
