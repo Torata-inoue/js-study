@@ -3,6 +3,7 @@ import { Counter } from './features/counter/Counter';
 import TaskList from './features/task/TaskList';
 import './App.css';
 import TaskInput from './features/task/TaskInput';
+import Fetch from './features/featch/Fetch';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Counter />
         <TaskInput />
         <TaskList />
+        <Fetch />
       </header>
     </div>
   );
