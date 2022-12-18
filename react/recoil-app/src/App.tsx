@@ -1,26 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {HashRouter, useRoutes} from "react-router-dom";
+import {RecoilRoot} from "recoil";
+import Home from "./pages/Home";
+import HookForm from "./pages/HookForm";
 
-function App() {
+const Routes: React.FC = () =>
+  useRoutes([
+    {
+      path: '/',
+      element: <Home />,
+    },
+    {
+      path: '/form',
+      element: <HookForm />
+    }
+  ]);
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RecoilRoot>
+      <HashRouter>
+        <Routes />
+      </HashRouter>
+    </RecoilRoot>
   );
-}
+};
 
 export default App;
