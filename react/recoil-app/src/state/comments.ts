@@ -1,5 +1,5 @@
-import {atom, selector, selectorFamily, useRecoilValue, useSetRecoilState} from "recoil";
-import {findCommentApi, getCommentsApi} from "../features/commentsApi";
+import {atom, atomFamily, selector, selectorFamily, useRecoilValue, useSetRecoilState} from "recoil";
+import {findCommentApi, getCommentsApi, getRepliesApi} from "../features/commentsApi";
 import {recoilKeys} from "./recoilKeys";
 
 export type CommentType = {
@@ -66,3 +66,11 @@ export const useDeleteComment: UseDeleteCommentType = () => {
   return (commentId) => setComments(currVal => currVal.filter(comment => comment.id !== commentId));
 };
 
+export type ReplyType = {commentId: number, comments: string[] | undefined};
+const replyAtom = atomFamily<ReplyType, number>({
+  key: recoilKeys.COMMENTS_REPLY,
+  default: commentId => getRepliesApi(commentId)
+});
+
+type UseReplyType = (commentId: number) => ReplyType;
+export const useReply: UseReplyType = (commentId) => useRecoilValue(replyAtom(commentId))

@@ -2,6 +2,7 @@ import React from "react";
 import {CommentType} from "../../state/comments";
 import {Link} from "react-router-dom";
 import DeleteButton from "./parts/DeleteButton";
+import ReplyBlock from "./Reply/ReplyBlock";
 
 const commentStyle = {
   border: 'solid 1px black',
@@ -21,6 +22,7 @@ const Comment: React.FC<CommentProps> = ({comment}) => (
     <p style={pStyle}>body: {comment.body}</p>
     <p style={pStyle}>flag: {comment.flag}</p>
     <DeleteButton commentId={comment.id} />
+    <ReplyBlock commentId={comment.id} />
   </div>
 );
 
