@@ -1,4 +1,12 @@
-import {atom, atomFamily, selector, selectorFamily, useRecoilValue, useSetRecoilState} from "recoil";
+import {
+  atom,
+  atomFamily,
+  selector,
+  selectorFamily,
+  useRecoilValue,
+  useResetRecoilState,
+  useSetRecoilState
+} from "recoil";
 import {findCommentApi, getCommentsApi, getRepliesApi} from "../features/commentsApi";
 import {recoilKeys} from "./recoilKeys";
 
@@ -17,36 +25,31 @@ const conditionAtom = atom<ConditionType>({
 type UseSetConditionType = () => (value: {page?: number | undefined; flag?: number | undefined}) => void;
 export const useSetCondition: UseSetConditionType = () => {
   const setCondition = useSetRecoilState(conditionAtom);
-  return ({page, flag}) =>
+  const resetComments = useResetRecoilState(commentsAtom);
+  return ({page, flag}) => {
     setCondition(currVal => ({
       page: page || currVal.page,
       flag: flag || currVal.flag
     }));
+    resetComments();
+  }
 };
 
 const commentsAtom = atom<CommentType[]>({
   key: recoilKeys.COMMENTS_COMMENTS,
-  default: getCommentsApi()
-});
-const commentsSelector = selector<CommentType[]>({
-  key: recoilKeys.COMMENTS_COMMENTS_SELECTOR,
-  get: ({get}) => {
-    const comments = get(commentsAtom);
-    const {flag, page} = get(conditionAtom);
-    if (flag || page) {
+  default: selector<CommentType[]>({
+    key: recoilKeys.COMMENTS_COMMENTS_SELECTOR,
+    get: ({get}) => {
+      const {flag, page} = get(conditionAtom);
       return getCommentsApi(flag, page);
     }
-    return comments;
-  },
-  set: ({set}, newValue) => {
-    set(commentsAtom, newValue);
-  }
+  })
 });
 
 const commentSelector = selectorFamily<CommentType, number>({
   key: recoilKeys.COMMENTS_COMMENT_SELECTOR,
   get: commentId => ({get}) => {
-    const comment = get(commentsSelector).find(_comment => commentId === _comment.id);
+    const comment = get(commentsAtom).find(_comment => commentId === _comment.id);
     if (!comment) {
       return findCommentApi(commentId);
     }
@@ -55,14 +58,14 @@ const commentSelector = selectorFamily<CommentType, number>({
 })
 
 type UseCommentsType = () => CommentType[];
-export const useComments: UseCommentsType = () => useRecoilValue(commentsSelector);
+export const useComments: UseCommentsType = () => useRecoilValue(commentsAtom);
 
 type UseFindCommentType = (commentId: number) => CommentType;
 export const useFindComment: UseFindCommentType = (commentId) => useRecoilValue(commentSelector(commentId));
 
 type UseDeleteCommentType = () => (commentId: number) => void;
 export const useDeleteComment: UseDeleteCommentType = () => {
-  const setComments = useSetRecoilState(commentsSelector);
+  const setComments = useSetRecoilState(commentsAtom);
   return (commentId) => setComments(currVal => currVal.filter(comment => comment.id !== commentId));
 };
 

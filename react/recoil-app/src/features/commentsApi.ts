@@ -3,10 +3,10 @@ import {CommentType, ReplyType} from "../state/comments";
 type GetCommentsApiType = (flag?: number | undefined, page?: number ) => Promise<CommentType[]>
 export const getCommentsApi: GetCommentsApiType = async (flag, page = 1) => {
   if (flag) {
-    const res = await fetch(`http://localhost:3004/comment?_limit=5&_page=${page}&flag=${flag}`);
+    const res = await fetch(`http://localhost:3004/comment?_limit=5&_page=${page}&flag=${flag}&_sort=id&_order=desc`);
     return res.json();
   }
-  const res = await fetch(`http://localhost:3004/comment?_limit=5&_page=${page}`);
+  const res = await fetch(`http://localhost:3004/comment?_limit=5&_page=${page}&_sort=id&_order=desc`);
   return res.json();
 };
 
