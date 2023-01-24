@@ -2,12 +2,11 @@ import {
   atom,
   atomFamily,
   selector,
-  selectorFamily,
+  selectorFamily, useRecoilCallback,
   useRecoilValue,
-  useResetRecoilState,
   useSetRecoilState
 } from "recoil";
-import {findCommentApi, getCommentsApi, getRepliesApi} from "../features/commentsApi";
+import {findCommentApi, getCommentsApi, getRepliesApi, postCommentApi} from "../features/commentsApi";
 import {recoilKeys} from "./recoilKeys";
 
 export type CommentType = {
@@ -16,22 +15,26 @@ export type CommentType = {
   flag: number;
 };
 
-type ConditionType = {page: number | undefined; flag: number | undefined};
-const conditionAtom = atom<ConditionType>({
+const conditionAtom = atom<number | undefined>({
   key: recoilKeys.COMMENTS_CONDITION,
-  default: {page: undefined, flag: undefined}
+  default: undefined
 });
+
+const pageState = atom<number>({
+  key: recoilKeys.COMMENTS_PAGE,
+  default: 1
+});
+
+type UseConditionType = () => {flag: number | 'none', page: number};
+export const useCondition: UseConditionType = () => ({flag: useRecoilValue(conditionAtom) || 'none', page: useRecoilValue(pageState)})
 
 type UseSetConditionType = () => (value: {page?: number | undefined; flag?: number | undefined}) => void;
 export const useSetCondition: UseSetConditionType = () => {
   const setCondition = useSetRecoilState(conditionAtom);
-  const resetComments = useResetRecoilState(commentsAtom);
+  const setPage = useSetRecoilState(pageState);
   return ({page, flag}) => {
-    setCondition(currVal => ({
-      page: page || currVal.page,
-      flag: flag || currVal.flag
-    }));
-    resetComments();
+    setCondition(currVal => flag || currVal);
+    setPage(currVal => page || currVal);
   }
 };
 
@@ -40,7 +43,8 @@ const commentsAtom = atom<CommentType[]>({
   default: selector<CommentType[]>({
     key: recoilKeys.COMMENTS_COMMENTS_SELECTOR,
     get: ({get}) => {
-      const {flag, page} = get(conditionAtom);
+      const flag = get(conditionAtom);
+      const page = get(pageState);
       return getCommentsApi(flag, page);
     }
   })
@@ -67,6 +71,16 @@ type UseDeleteCommentType = () => (commentId: number) => void;
 export const useDeleteComment: UseDeleteCommentType = () => {
   const setComments = useSetRecoilState(commentsAtom);
   return (commentId) => setComments(currVal => currVal.filter(comment => comment.id !== commentId));
+};
+
+type UsePostCommentType = () => (body: string, flag: number) => void;
+export const usePostComment: UsePostCommentType = () => {
+  return useRecoilCallback(({set, reset}) => async (body, flag) => {
+    const res = await postCommentApi(body, flag);
+    reset(pageState);
+    reset(conditionAtom);
+    set(commentsAtom, currVal => [res, ...currVal]);
+  });
 };
 
 export type ReplyType = {commentId: number, comments: string[] | undefined};

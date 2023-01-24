@@ -23,3 +23,17 @@ export const getRepliesApi: GetRepliesApiType = async (commentId) => {
   const reply = await res.json();
   return reply[0];
 };
+
+type PostCommentType = (body: string, flag: number) => Promise<CommentType>;
+export const postCommentApi: PostCommentType = async (body, flag) => {
+  const res = await fetch('http://localhost:3004/comment', {
+    method: 'POST',
+    body: JSON.stringify({body, flag}),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return res.json();
+}
